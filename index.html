@@ -141,44 +141,101 @@
   .meta-pill.green { border-color: var(--green); color: var(--green); }
   .meta-pill.amber { border-color: var(--amber); color: var(--amber); }
 
-  .clearance-box {
-    align-self: flex-start;
-    border: 1px solid var(--border2);
-    background: var(--panel);
-    padding: 20px 24px;
-    min-width: 220px;
+  .portrait-box {
+    align-self: stretch;
+    position: relative;
+    width: 220px;
+    min-height: 280px;
+    flex-shrink: 0;
     opacity: 0;
     animation: fadeUp 0.6s 0.4s forwards;
-    position: relative;
   }
 
-  .bracket { position: absolute; width: 10px; height: 10px; border-color: var(--accent); border-style: solid; opacity: 0.6; }
-  .bracket.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-  .bracket.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-  .bracket.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-  .bracket.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .portrait-img {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: grayscale(30%) contrast(1.05);
+  }
 
-  .clearance-label {
+  /* Overlay: corner brackets */
+  .bracket { position: absolute; width: 14px; height: 14px; border-color: var(--accent); border-style: solid; opacity: 0.8; z-index: 2; }
+  .bracket.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+  .bracket.tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+  .bracket.bl { bottom: 28px; left: 0; border-width: 0 0 2px 2px; }
+  .bracket.br { bottom: 28px; right: 0; border-width: 0 2px 2px 0; }
+
+  /* ID label strip along bottom */
+  .portrait-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10, 13, 16, 0.88);
+    border-top: 1px solid var(--border2);
+    padding: 5px 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    z-index: 2;
+  }
+
+  /* Scanline effect over portrait */
+  .portrait-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Placeholder shown only when image fails to load */
+  .portrait-placeholder {
+    display: none;
+    width: 100%;
+    min-height: 280px;
+    background: var(--panel);
+    border: 1px solid var(--border2);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .portrait-img:not([src]),
+  .portrait-img[src=""] {
+    display: none;
+  }
+
+  .portrait-img:not([src]) ~ .portrait-placeholder,
+  .portrait-img[src=""] ~ .portrait-placeholder {
+    display: flex;
+  }
+
+  .placeholder-icon {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.3;
+  }
+
+  .placeholder-text {
     font-family: var(--mono);
     font-size: 10px;
     color: var(--text3);
-    letter-spacing: 0.15em;
-    margin-bottom: 8px;
-  }
-
-  .clearance-level {
-    font-family: var(--cond);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--amber);
-    letter-spacing: 0.08em;
-  }
-
-  .clearance-sub {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    margin-top: 12px;
+    letter-spacing: 0.1em;
     line-height: 1.8;
   }
 
@@ -447,23 +504,50 @@
       <div class="header-top">RIGSPOLITIET // NSK // ANSØGNINGSMAPPE // 2026-03-13</div>
       <h1>
         TJALFE AXEL HILLDORF
-        <span>MAJOR (AFSKED) · EFTERRETNINGSSPECIALIST </span>
+        <span>MAJOR (AFSKED) · EFTERRETNINGSSPECIALIST · KANDIDAT TIL AFDELINGSLEDER, NSK</span>
       </h1>
       <div class="header-meta">
         <div class="meta-pill">FDT: 04.06.1975</div>
         <div class="meta-pill green">11 UDSENDELSER</div>
         <div class="meta-pill green">16 DEKORATIONER</div>
+        <div class="meta-pill amber">2 KL. BILAG</div>
+        <div class="meta-pill">KLARERING: TOP SECRET</div>
       </div>
+    </div>
+    <div class="portrait-box">
+      <div class="bracket tl"></div><div class="bracket tr"></div>
+      <div class="bracket bl"></div><div class="bracket br"></div>
+      <!--
+        BILLEDE: Navngiv dit billede "portrait.jpg" (eller .png / .webp)
+        og læg det i samme mappe som index.html.
+        Siden viser det automatisk her.
+      -->
+      <img class="portrait-img" src="portrait.jpg" alt="Tjalfe Axel Hilldorf"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="portrait-placeholder">
+        <div class="placeholder-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="placeholder-text">
+          AFVENTER BILLEDE<br>
+          Tilføj portrait.jpg<br>
+          til samme mappe
+        </div>
+      </div>
+      <div class="portrait-label">HILLDORF T.A. // ID: NSK-AFL-2026-03 // FORTROLIG</div>
     </div>
   </div>
 </header>
 
-<!--<div class="ticker">
+<div class="ticker">
   <div class="ticker-inner">
     ANSØGNING // NSK AFDELINGSLEDER // TJALFE AXEL HILLDORF // MAJOR (AFSKED) // EFTERRETNINGSREGIMENTET // SOKOM // OIR HOLD 2 · 4 · 7 // ISAF HOLD 2 · 7 · 9 // DANCON/IRAQ HOLD 2 // ATALANTA HOLD 6 // EUTM MALI HOLD 3 // KFOR HOLD 3 // SFOR HOLD 1 // FORTJENSTMEDALJE MED SVÆRD // NATO MERITORIOUS SERVICE MEDAL // KLASSIFICERET AKTIVITET JNFR. LUKKET BILAG // &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     ANSØGNING // NSK AFDELINGSLEDER // TJALFE AXEL HILLDORF // MAJOR (AFSKED) // EFTERRETNINGSREGIMENTET // SOKOM // OIR HOLD 2 · 4 · 7 // ISAF HOLD 2 · 7 · 9 // DANCON/IRAQ HOLD 2 // ATALANTA HOLD 6 // EUTM MALI HOLD 3 // KFOR HOLD 3 // SFOR HOLD 1 // FORTJENSTMEDALJE MED SVÆRD // NATO MERITORIOUS SERVICE MEDAL // KLASSIFICERET AKTIVITET JNFR. LUKKET BILAG //
   </div>
-</div>-->
+</div>
 
 <main>
 
@@ -546,7 +630,7 @@
         </div>
       </a>
 
-      <a href="Straffeattest.pdf" class="doc-card" download>
+      <a href="BilagC_Straffeattest.docx" class="doc-card" download>
         <div class="doc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
@@ -567,7 +651,7 @@
     <div class="doc-group-title">Militær baggrund og kvalifikationer</div>
     <div class="doc-grid">
 
-      <a href="Tjenesteattest.pdf" class="doc-card classified" download>
+      <a href="BilagD_Tjenesteattest.docx" class="doc-card classified" download>
         <div class="doc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
@@ -593,7 +677,7 @@
         </div>
       </a>
 
-      <a href="Skydeattest.pdf" class="doc-card" download>
+      <a href="BilagB_Skydeattest.docx" class="doc-card" download>
         <div class="doc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
         </div>
